@@ -1,56 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import ItemCount from './ItemCount.jsx';
+import React, { useEffect, useState, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import { getProductos } from '../mocks/api.jsx';
+import { CartContext } from '../context/CartContext'; // Asegúrate de que esta ruta esté bien
+import ItemCount from './ItemCount';
 
-const ItemListContainer = ({ greeting }) => {
-  const [items, setItems] = useState([]);
+const ItemDetailContainer = () => {
+  const { itemId } = useParams();
+  const [item, setItem] = useState(null);
   const [error, setError] = useState(null);
-  const { categoryId } = useParams();
+  const { addItem } = useContext(CartContext); // Asegúrate de que addItem se obtiene del contexto
 
   useEffect(() => {
-    const fetchItems = async () => {
+    const fetchItemDetail = async () => {
       try {
         const productos = await getProductos();
-        setItems(
-          productos.filter((item) => !categoryId || item.category === categoryId)
-        );
+        console.log("Productos obtenidos:", productos);
+        const foundItem = productos.find((prod) => prod.id === itemId);
+        console.log("Producto encontrado:", foundItem);
+        setItem(foundItem);
       } catch (err) {
-        setError(err);
+        setError('Error al cargar los detalles del producto.');
       }
     };
+  
+    fetchItemDetail();
+  }, [itemId]);
+  
 
-    fetchItems();
-  }, [categoryId]);
+  if (error) return <p>{error}</p>;
+  if (!item) return <p>Cargando detalles...</p>;
 
   const onAdd = (quantity) => {
-    alert(`Has añadido ${quantity} productos al carrito.`);
+    addItem(item, quantity); // Esto ahora debería funcionar
+    alert(`Agregaste ${quantity} unidades de ${item.name} al carrito.`);
   };
 
   return (
-    <div className="item-list-container">
-      <h1 className="greeting">{greeting}</h1>
-      {error && <p className="error-message">{error}</p>}
-      <div className="product-grid">
-        {items.map((item) => (
-          <div key={item.id} className="product-card">
-            <img
-              src={item.img}
-              alt={item.name}
-              className="product-image"
-            />
-            <h2 className="product-name">{item.name}</h2>
-            <p className="product-description">{item.description}</p>
-            <p className="product-price">Precio: ${item.price}</p>
-            <ItemCount stock={item.stock} initial={1} onAdd={onAdd} />
-            <Link to={`/item/${item.id}`} className="details-link">
-              Ver detalles
-            </Link>
-          </div>
-        ))}
-      </div>
+    <div className="item-detail">
+      <img src={item.img} alt={item.name} />
+      <h2>{item.name}</h2>
+      <p>{item.description}</p>
+      <p>Precio: ${item.price}</p>
+      <ItemCount stock={item.stock} initial={1} onAdd={onAdd} />
     </div>
   );
 };
 
-export default ItemListContainer;
+export default ItemDetailContainer;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ItemCount from './ItemCount.jsx';
+import { getProductos } from '../mocks/api.jsx';
 
 function Item({ item }) {
   return (
@@ -11,7 +12,7 @@ function Item({ item }) {
       <p>Precio: ${item.price}</p>
       <p>Stock: {item.stock}</p>
       <ItemCount stock={item.stock} initial={1} onAdd={(quantity) => alert(`Has añadido ${quantity} al carrito`)} />
-      <Link to={`/item/${item.id}`} className="btn btn-primary">Ver detalles</Link>
+      <Link to={`/item/${item.id}`} className='btn btn-primary'>Ver detalles</Link>
     </div>
   );
 }
