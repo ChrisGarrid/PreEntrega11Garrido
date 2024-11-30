@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import ItemCount from './ItemCount.jsx';
-
+import { useParams } from 'react-router-dom';
+import { getProductos } from '../mocks/api.jsx'; // Importa la función
+import Item from './Item';
 
 const ItemListContainer = ({ greeting }) => {
   const [items, setItems] = useState([]);
+  const [error, setError] = useState(null);
   const { categoryId } = useParams();
 
   useEffect(() => {
-    // Simular llamada a API
     const fetchItems = async () => {
-      const itemsMock = [
-        { id: 1, name: 'Producto 1', stock: 10, category: 'category1', image: 'img/ANAGO.png' },
-        { id: 2, name: 'Producto 2', stock: 10, category: 'category2', image: '/img/producto1.jpg' },
-      ];
-      setItems(itemsMock.filter((item) => !categoryId || item.category === categoryId));
+      try {
+        const productos = await getProductos(); // Llama a la promesa
+        setItems(
+          productos.filter((item) => !categoryId || item.category === categoryId)
+        );
+      } catch (err) {
+        setError(err); // Maneja el error en caso de rechazo
+      }
     };
 
     fetchItems();
@@ -27,13 +30,14 @@ const ItemListContainer = ({ greeting }) => {
   return (
     <div>
       <h1>{greeting}</h1>
-      {items.map((item) => (
-        <div key={item.id}>
-          <h2>{item.name}</h2>
-          <ItemCount stock={item.stock} initial={1} onAdd={onAdd} />
-          <Link to={`/item/${item.id}`}>Ver detalles</Link>
-        </div>
-      ))}
+      {error && <p>{error}</p>} {/* Muestra el error si ocurre */}
+      <div className="row">
+        {items.map((item) => (
+          <div className="col-md-4" key={item.id}>
+            <Item item={item} onAdd={onAdd} /> {/* Usamos el componente Item */}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

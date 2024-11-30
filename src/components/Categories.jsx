@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 const Categories = () => {
   return (
     <ul className="navbar-categories">
-      <li><Link to="/category/electronica">Electrónica</Link></li>
-      <li><Link to="/category/ropa">Ropa</Link></li>
-      <li><Link to="/category/hogar">Hogar</Link></li>
+      <li><Link to="/category/menu a">menu a</Link></li>
+      <li><Link to="/category/menu b">menu b</Link></li>
+      <li><Link to="/category/menu c">menu c</Link></li>
     </ul>
   );
 };
