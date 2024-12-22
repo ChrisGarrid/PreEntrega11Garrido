@@ -1,44 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getProductoById } from '../firebase/firebaseConfig';
-import { useCart } from '../context/CartContext';
-import ItemCount from './ItemCount';
+import React, { useState, useEffect } from 'react';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { db } from '../firebase/firebaseConfig';
+import ItemList from './ItemList';
+import menuData from '../firebase/menuData.json';
 
-const ItemDetailContainer = () => {
-  const { itemId } = useParams();
-  const [item, setItem] = useState(null);
-  const [error, setError] = useState(null);
-  const { addItem } = useCart();
+const ItemListContainer = () => {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchItemDetail = async () => {
-      try {
-        const foundItem = await getProductoById(itemId);
-        setItem(foundItem);
-      } catch (err) {
-        setError('Producto no encontrado.');
-      }
+    const fetchItems = async () => {
+      const querySnapshot = await getDocs(collection(db, 'items'));
+      const products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setItems(products);
+      setLoading(false);
     };
 
-    fetchItemDetail();
-  }, [itemId]);
+    fetchItems();
+  }, []);
 
-  if (error) return <p>{error}</p>;
-  if (!item) return <p>Cargando detalles...</p>;
-
-  const onAdd = (quantity) => {
-    addItem(item, quantity);
+  const addData = () => { 
+    const collectionToAdd = collection(db, 'items');
+    menuData.forEach((item) => addDoc(collectionToAdd, item));
   };
 
   return (
-    <div className="item-detail">
-      <img src={item.img} alt={item.name} />
-      <h2>{item.name}</h2>
-      <p>{item.description}</p>
-      <p>Precio: ${item.price}</p>
-      <ItemCount stock={item.stock} initial={1} onAdd={onAdd} />
+    <div className="item-list-container">
+      <h1>Productos Disponibles</h1>
+      <button onClick={addData} className="btn btn-primary">Agregar a Firebase</button>
+      {loading ? <p>Cargando productos...</p> : <ItemList items={items} />}
     </div>
   );
 };
 
-export default ItemDetailContainer;
+export default ItemListContainer;

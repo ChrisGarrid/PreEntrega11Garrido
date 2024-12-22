@@ -1,56 +1,61 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { collection, getDocs, addDoc, query, where } from 'firebase/firestore';
+import { db } from '../firebase/firebaseConfig';
 import ItemList from './ItemList';
-import { getProductos } from '../firebase/firebaseConfig';
-import Loader from './Loader';
-import { Link } from 'react-router-dom';
+import menuData from '../firebase/menuData.json';
+import { useParams } from 'react-router-dom';
 
-const ItemListContainer = ({ greeting }) => {
+const ItemListContainer = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { categoryId } = useParams();
 
   useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const productos = await getProductos();
-        if (productos.length === 0) {
-          setError('No hay productos disponibles.');
-        } else {
-          setItems(productos);
-        }
-      } catch (err) {
-        console.error('Error al cargar productos:', err);
-        setError('Hubo un problema al cargar los productos.');
-      } finally {
-        setLoading(false);
-      }
-    };
+    setLoading(true);
     fetchItems();
-  }, []);
+  }, [categoryId]);
 
-  const handleAddToCart = (product) => {
-    const existingItem = items.find(item => item.id === product.id);
-    if (existingItem) {
-      existingItem.quantity += 1;
-      setItems([...items]);
-    } else {
-      setItems([...items, { ...product, quantity: 1 }]);
+  const fetchItems = async () => {
+    try {
+      const collectionRef = collection(db, 'items');
+      let q;
+
+      if (categoryId) {
+    q = query(collectionRef, where('category', '==', categoryId));
+      } else {
+        q = collectionRef;
+      }
+
+      const querySnapshot = await getDocs(q);
+      const products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setItems(products);
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (error) {
-    return (
-      <div>
-        <h3>{error}</h3>
-        <Link to='/' className='btn btn-dark'>Volver a home</Link>
-      </div>
-    );
-  }
+  const addData = async () => {
+    const collectionToAdd = collection(db, 'items');
+
+    for (const item of menuData) {
+      const itemQuery = query(collectionToAdd, where('name', '==', item.name));
+      const querySnapshot = await getDocs(itemQuery);
+
+      if (querySnapshot.empty) {
+        await addDoc(collectionToAdd, item);
+      }
+    }
+
+    fetchItems();
+  };
 
   return (
-    <div className="container">
-      <h1>{greeting}</h1>
-      {loading ? <Loader /> : <ItemList items={items} onAddToCart={handleAddToCart} />}
+    <div className="item-list-container">
+      <h1>Productos Disponibles {categoryId ? `- ${categoryId}` : ''}</h1>
+      <button onClick={addData} className="btn btn-primary">Agregar a Firebase</button>
+      {loading ? <p>Cargando productos...</p> : <ItemList items={items} />}
     </div>
   );
 };

@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 const Categories = () => {
   // Definir un array de categorías
   const categories = [
-    { id: 'ramen', name: 'Ramen' },
-    { id: 'fondos', name: 'Fondos' },
-    { id: 'entradas', name: 'Entradas' },
-    { id: 'extras', name: 'Extras' },
-    { id: 'bebestibles', name: 'Bebestibles' }
+    { id: 'Ramen', name: 'Ramen' },
+    { id: 'Fondos', name: 'Fondos' },
+    { id: 'Entradas', name: 'Entradas' },
+    { id: 'Postres', name: 'Postres' },
+    { id: 'Bebidas', name: 'Bebidas' }
   ];
 
   return (
