@@ -9,12 +9,17 @@ const Cart = () => {
   const [discountValue, setDiscountValue] = useState(0);
 
   const handleQuantityChange = (item, action) => {
-    if (action === 'increase') {
-      item.quantity += 1;
-    } else if (action === 'decrease' && item.quantity > 1) {
-      item.quantity -= 1;
-    }
-    setCart([...cart]);
+    const updatedCart = cart.map((cartItem) => {
+      if (cartItem.id === item.id) {
+        if (action === 'increase' && cartItem.quantity < item.stock) {
+          return { ...cartItem, quantity: cartItem.quantity + 1 };
+        } else if (action === 'decrease' && cartItem.quantity > 1) {
+          return { ...cartItem, quantity: cartItem.quantity - 1 };
+        }
+      }
+      return cartItem;
+    });
+    setCart(updatedCart);
   };
 
   const applyDiscount = () => {

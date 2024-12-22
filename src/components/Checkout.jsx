@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
-import { Link } from 'react-router-dom';
 
 const Checkout = () => {
   const { cart, totalAmount, clearCart } = useCart();
-  const [buyer, setBuyer] = useState({ name: '', email: '', confirmEmail: '', phone: '', deliveryMethod: 'retirar' });
+  const [buyer, setBuyer] = useState({ name: '', email: '', confirmEmail: '', phone: '' });
+  const [deliveryMethod, setDeliveryMethod] = useState('retiro');
   const [orderId, setOrderId] = useState(null);
-  const [error, setError] = useState(null);
-  const [emailError, setEmailError] = useState(null);
+  const [error, setError] = useState('');
 
   const handleInputChange = (e) => {
     setBuyer({ ...buyer, [e.target.name]: e.target.value });
@@ -18,13 +17,18 @@ const Checkout = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!buyer.name || !buyer.email || !buyer.confirmEmail || !buyer.phone || !buyer.deliveryMethod) {
+    if (!buyer.name || !buyer.email || !buyer.confirmEmail || !buyer.phone) {
       setError('Por favor, complete todos los campos.');
       return;
     }
 
     if (buyer.email !== buyer.confirmEmail) {
-      setEmailError('Los correos electrónicos no coinciden.');
+      setError('Los correos electrónicos no coinciden.');
+      return;
+    }
+
+    if (!/^[0-9]{9,15}$/.test(buyer.phone)) {
+      setError('Ingrese un número de teléfono válido.');
       return;
     }
 
@@ -32,6 +36,7 @@ const Checkout = () => {
       buyer,
       items: cart,
       total: totalAmount(),
+      deliveryMethod,
       date: new Date(),
     };
 
@@ -39,61 +44,85 @@ const Checkout = () => {
       const docRef = await addDoc(collection(db, 'orders'), order);
       setOrderId(docRef.id);
       clearCart();
-    } catch (err) {
-      setError('Hubo un error al procesar la orden. Inténtelo nuevamente.');
+    } catch (error) {
+      setError('Hubo un error al procesar la orden.');
     }
   };
-
-  if (orderId) {
-    return (
-      <div className="order-confirmation">
-        <h2>¡Gracias por tu compra!</h2>
-        <p>Tu número de orden es: <strong>{orderId}</strong></p>
-        <Link to="/" className="btn btn-primary">Volver a la tienda</Link>
-      </div>
-    );
-  }
 
   return (
     <div className="checkout-container">
       <h1>Finalizar Compra</h1>
-      <form onSubmit={handleSubmit} className="checkout-form">
-        <input 
-          type="text" 
-          name="name" 
-          placeholder="Nombre Completo" 
-          value={buyer.name}
-          onChange={handleInputChange}
-        />
-        <input 
-          type="email" 
-          name="email" 
-          placeholder="Correo Electrónico" 
-          value={buyer.email}
-          onChange={handleInputChange}
-        />
-        <input 
-          type="email" 
-          name="confirmEmail" 
-          placeholder="Confirma tu Correo" 
-          value={buyer.confirmEmail}
-          onChange={handleInputChange}
-        />
-        <input 
-          type="tel" 
-          name="phone" 
-          placeholder="Teléfono" 
-          value={buyer.phone}
-          onChange={handleInputChange}
-        />
-        <select name="deliveryMethod" value={buyer.deliveryMethod} onChange={handleInputChange}>
-          <option value="retirar">Retiro en sucursal</option>
-          <option value="envio">Envío a domicilio</option>
-        </select>
-        {emailError && <p className="error">{emailError}</p>}
-        {error && <p className="error">{error}</p>}
-        <button type="submit" className="btn btn-success">Confirmar Compra</button>
-      </form>
+      {orderId ? (
+        <div>
+          <h2>Gracias por su compra!</h2>
+          <p>Su número de orden es: <strong>{orderId}</strong></p>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label>Nombre</label>
+            <input
+              type="text"
+              name="name"
+              value={buyer.name}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div>
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              value={buyer.email}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div>
+            <label>Confirmar Email</label>
+            <input
+              type="email"
+              name="confirmEmail"
+              value={buyer.confirmEmail}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div>
+            <label>Teléfono</label>
+            <input
+              type="text"
+              name="phone"
+              value={buyer.phone}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div>
+            <label>Método de Entrega</label>
+            <select value={deliveryMethod} onChange={(e) => setDeliveryMethod(e.target.value)}>
+              <option value="retiro">Retiro en Sucursal</option>
+              <option value="envio">Envío a Domicilio</option>
+            </select>
+          </div>
+
+          <div className="order-summary">
+            <h3>Resumen del Pedido</h3>
+            {cart.map(item => (
+              <div key={item.id}>
+                <p>{item.name} x {item.quantity} - ${item.price * item.quantity}</p>
+              </div>
+            ))}
+            <h4>Total: ${totalAmount()}</h4>
+          </div>
+
+          {error && <p className="error">{error}</p>}
+          <button type="submit" className="btn btn-success" disabled={orderId !== null}>
+            {orderId ? 'Procesando...' : 'Confirmar Compra'}
+          </button>
+        </form>
+      )}
     </div>
   );
 };

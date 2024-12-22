@@ -1,17 +1,25 @@
-// src/components/ItemCount.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const ItemCount = ({ stock, initial, onAdd }) => {
   const [quantity, setQuantity] = useState(initial);
   const [added, setAdded] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleIncrease = () => {
-    if (quantity < stock) setQuantity(quantity + 1);
+    if (quantity < stock) {
+      setQuantity(quantity + 1);
+      setError(null);
+    } else {
+      setError('No hay más stock disponible');
+    }
   };
 
   const handleDecrease = () => {
-    if (quantity > 0) setQuantity(quantity - 1);
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+      setError(null);
+    }
   };
 
   const handleAddToCart = () => {
@@ -29,12 +37,13 @@ const ItemCount = ({ stock, initial, onAdd }) => {
         </Link>
       ) : (
         <>
-          <button onClick={handleDecrease} disabled={quantity === 0}>-</button>
+          <button onClick={handleDecrease} disabled={quantity <= 1}>-</button>
           <span>{quantity}</span>
           <button onClick={handleIncrease} disabled={quantity >= stock}>+</button>
-          <button onClick={handleAddToCart}>Agregar al carrito</button>
+          <button onClick={handleAddToCart} className="btn btn-success">Agregar al carrito</button>
         </>
       )}
+      {error && <p className="error">{error}</p>}
     </div>
   );
 };
