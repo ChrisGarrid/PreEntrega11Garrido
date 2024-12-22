@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "name": "Edamame",
     "description": "Vainas de soja salteadas.",
     "price": 4500,
@@ -8,6 +9,7 @@
     "stock": 30
   },
   {
+    "id": 2,
     "name": "Gyosas al vapor",
     "description": "Empanadas asiáticas al vapor.",
     "price": 5200,
@@ -16,6 +18,7 @@
     "stock": 25
   },
   {
+    "id": 3,
     "name": "Takoyaki",
     "description": "Bolitas de pulpo con jengibre, cebollín, salsa tonkatsu y mayonesa.",
     "price": 6200,
@@ -24,6 +27,7 @@
     "stock": 20
   },
   {
+    "id": 4,
     "name": "Miso Ramen",
     "description": "Caldo de miso, ajitama (huevo marinado), chashu y wakame.",
     "price": 9500,
@@ -32,6 +36,7 @@
     "stock": 15
   },
   {
+    "id": 5,
     "name": "Yakimeshi",
     "description": "Arroz frito con camarones, calamar y cebolla.",
     "price": 10000,
@@ -40,6 +45,7 @@
     "stock": 25
   },
   {
+    "id": 6,
     "name": "Katsu curry",
     "description": "Curry japonés con arroz y cerdo frito.",
     "price": 12000,
@@ -48,6 +54,7 @@
     "stock": 20
   },
   {
+    "id": 7,
     "name": "Tonkotsu ramen",
     "description": "Caldo de cerdo, ajitama, chashu, bambú y sésamo tostado.",
     "price": 10800,
@@ -56,6 +63,7 @@
     "stock": 18
   },
   {
+    "id": 8,
     "name": "Bebidas",
     "description": "Bebidas frías con y sin gas.",
     "price": 2000,
@@ -64,6 +72,7 @@
     "stock": 50
   },
   {
+    "id": 9,
     "name": "Postre",
     "description": "Dulces japoneses tradicionales.",
     "price": 4000,

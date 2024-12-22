@@ -1,58 +1,52 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
-export const useCart = () => useContext(CartContext);
-
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem('cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
 
-  // Agregar un producto al carrito o sumar cantidad si ya existe
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+
   const addItem = (item, quantity) => {
-    const existingItem = cartItems.find(prod => prod.id === item.id);
-
+    const existingItem = cart.find((i) => i.id === item.id);
     if (existingItem) {
-      const updatedCart = cartItems.map(prod =>
-        prod.id === item.id ? { ...prod, quantity: prod.quantity + quantity } : prod
-      );
-      setCartItems(updatedCart);
+      existingItem.quantity += quantity;
+      setCart([...cart]);
     } else {
-      setCartItems([...cartItems, { ...item, quantity }]);
+      setCart([...cart, { ...item, quantity }]);
     }
   };
 
-  // Eliminar un producto específico
-  const removeItem = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+  const removeItem = (itemId) => {
+    setCart(cart.filter((item) => item.id !== itemId));
   };
 
-  // Vaciar el carrito completamente
   const clearCart = () => {
-    setCartItems([]);
+    setCart([]);
   };
 
-  // Calcular la cantidad total de productos
+  const totalAmount = () => {
+    return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  };
+
   const totalItems = () => {
-    return cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  };
-
-  // Calcular el precio total de la compra
-  const totalPrice = () => {
-    return cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
+    return cart.reduce((acc, item) => acc + item.quantity, 0);
   };
 
   return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        addItem,
-        removeItem,
-        clearCart,
-        totalItems,
-        totalPrice
-      }}
-    >
+    <CartContext.Provider value={{ cart, addItem, removeItem, clearCart, totalAmount, totalItems, setCart }}>
       {children}
     </CartContext.Provider>
   );
+};
+
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) throw new Error('useCart debe estar dentro de un CartProvider');
+  return context;
 };

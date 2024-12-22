@@ -1,23 +1,30 @@
-import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { getProductos } from '../mocks/api.jsx';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
+import { useParams, Link } from 'react-router-dom';
+import { getProductoById } from '../firebase/firebaseConfig';
+import ItemCount from './ItemCount';
 
-function ItemDetail() {
-  const { id } = useParams();
-  const [item, setItem] = useState(null);
-  const [added, setAdded] = useState(false);
+const ItemDetail = () => {
   const { addItem } = useCart();
+  const [item, setItem] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [added, setAdded] = useState(false);
+  const { itemId } = useParams();
 
-  React.useEffect(() => {
-    getProductos().then((productos) => {
-      const product = productos.find((prod) => prod.id === parseInt(id));
-      setItem(product || null);
-    });
-  }, [id]);
+  useEffect(() => {
+    const fetchItem = async () => {
+      try {
+        const product = await getProductoById(itemId);
+        setItem(product);
+      } catch {
+        setItem(null);
+      }
+    };
+    fetchItem();
+  }, [itemId]);
 
   const handleAddToCart = () => {
-    addItem(item, 1);
+    addItem(item, quantity);
     setAdded(true);
   };
 
@@ -25,23 +32,23 @@ function ItemDetail() {
 
   return (
     <div className="item-detail">
-      <h1>{item.name}</h1>
-      <img src={item.img} alt={item.name} className="item-detail-image" />
+      <h2>{item.name}</h2>
       <p>{item.description}</p>
       <p>Precio: ${item.price}</p>
-      <p>Stock disponible: {item.stock}</p>
-      
       {added ? (
         <Link to="/cart">
           <button className="btn btn-primary">Ir al carrito</button>
         </Link>
       ) : (
-        <button onClick={handleAddToCart} className="btn btn-success">
-          Añadir al carrito
-        </button>
+        <div>
+          <ItemCount quantity={quantity} setQuantity={setQuantity} />
+          <button onClick={handleAddToCart} className="btn btn-primary">
+            Agregar al carrito
+          </button>
+        </div>
       )}
     </div>
   );
-}
+};
 
 export default ItemDetail;
