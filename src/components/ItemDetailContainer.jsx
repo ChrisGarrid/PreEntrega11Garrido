@@ -1,38 +1,33 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getProductos } from '../mocks/api.jsx';
-import { CartContext } from '../context/CartContext'; // Asegúrate de que esta ruta esté bien
+import { getProductoById } from '../firebase/firebaseConfig';
+import { useCart } from '../context/CartContext';
 import ItemCount from './ItemCount';
 
 const ItemDetailContainer = () => {
   const { itemId } = useParams();
   const [item, setItem] = useState(null);
   const [error, setError] = useState(null);
-  const { addItem } = useContext(CartContext); // Asegúrate de que addItem se obtiene del contexto
+  const { addItem } = useCart();
 
   useEffect(() => {
     const fetchItemDetail = async () => {
       try {
-        const productos = await getProductos();
-        console.log("Productos obtenidos:", productos);
-        const foundItem = productos.find((prod) => prod.id === itemId);
-        console.log("Producto encontrado:", foundItem);
+        const foundItem = await getProductoById(itemId);
         setItem(foundItem);
       } catch (err) {
-        setError('Error al cargar los detalles del producto.');
+        setError('Producto no encontrado.');
       }
     };
-  
+
     fetchItemDetail();
   }, [itemId]);
-  
 
   if (error) return <p>{error}</p>;
   if (!item) return <p>Cargando detalles...</p>;
 
   const onAdd = (quantity) => {
-    addItem(item, quantity); // Esto ahora debería funcionar
-    alert(`Agregaste ${quantity} unidades de ${item.name} al carrito.`);
+    addItem(item, quantity);
   };
 
   return (

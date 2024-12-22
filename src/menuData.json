@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Edamame",
+    "description": "Vainas de soja salteadas.",
+    "price": 4500,
+    "category": "entradas",
+    "img": "https://www.recetaslider.cl/wp-content/uploads/2022/08/ramenvegetariano_h-scaled.jpg",
+    "stock": 30
+  },
+  {
+    "name": "Gyosas al vapor",
+    "description": "Empanadas asiáticas al vapor.",
+    "price": 5200,
+    "category": "entradas",
+    "img": "https://www.recetaslider.cl/wp-content/uploads/2022/08/ramenvegetariano_h-scaled.jpg",
+    "stock": 25
+  },
+  {
+    "name": "Takoyaki",
+    "description": "Bolitas de pulpo con jengibre, cebollín, salsa tonkatsu y mayonesa.",
+    "price": 6200,
+    "category": "entradas",
+    "img": "https://www.recetaslider.cl/wp-content/uploads/2022/08/ramenvegetariano_h-scaled.jpg",
+    "stock": 20
+  },
+  {
+    "name": "Miso Ramen",
+    "description": "Caldo de miso, ajitama (huevo marinado), chashu y wakame.",
+    "price": 9500,
+    "category": "ramen",
+    "img": "https://example.com/miso-ramen.jpg",
+    "stock": 15
+  },
+  {
+    "name": "Yakimeshi",
+    "description": "Arroz frito con camarones, calamar y cebolla.",
+    "price": 10000,
+    "category": "fondos",
+    "img": "https://example.com/yakimeshi.jpg",
+    "stock": 25
+  },
+  {
+    "name": "Katsu curry",
+    "description": "Curry japonés con arroz y cerdo frito.",
+    "price": 12000,
+    "category": "fondos",
+    "img": "https://example.com/katsu-curry.jpg",
+    "stock": 20
+  },
+  {
+    "name": "Tonkotsu ramen",
+    "description": "Caldo de cerdo, ajitama, chashu, bambú y sésamo tostado.",
+    "price": 10800,
+    "category": "ramen",
+    "img": "https://example.com/tonkotsu-ramen.jpg",
+    "stock": 18
+  },
+  {
+    "name": "Bebidas",
+    "description": "Bebidas frías con y sin gas.",
+    "price": 2000,
+    "category": "bebidas",
+    "img": "https://example.com/bebidas.jpg",
+    "stock": 50
+  },
+  {
+    "name": "Postre",
+    "description": "Dulces japoneses tradicionales.",
+    "price": 4000,
+    "category": "postres",
+    "img": "https://example.com/postre.jpg",
+    "stock": 15
+  }
+]

@@ -1,16 +1,12 @@
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+}
+
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  padding: 20px;
 }
 
 .App-header {
@@ -28,134 +24,71 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.item-card {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
 }
 
-.item-card {
-  border: 1px solid #ccc;
-  padding: 20px;
-  margin: 10px;
-  border-radius: 8px;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.item-card:hover {
+  transform: translateY(-10px);
 }
 
 .item-card img {
-  width: 200px;
+  width: 100%;
   height: 200px;
   object-fit: cover;
-  border-radius: 8px;
+}
+
+.item-card .item-details {
+  padding: 20px;
 }
 
 .item-card h3 {
-  font-size: 1.5rem;
-  margin-top: 10px;
+  font-size: 1.8rem;
+  color: #333;
 }
 
 .item-card p {
   font-size: 1rem;
-  color: #555;
+  color: #777;
+  margin: 10px 0;
 }
 
 .btn-primary {
   background-color: #007bff;
   color: white;
-  padding: 10px 20px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  cursor: pointer;
   text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.3s ease;
 }
 
 .btn-primary:hover {
   background-color: #0056b3;
 }
 
-.item-list-container {
-  padding: 20px;
-}
-
-.greeting {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.error-message {
-  color: red;
-  text-align: center;
-  font-size: 1.2rem;
-}
-
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.product-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-}
-
-.product-image {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
-
-.product-name {
-  font-size: 1.5rem;
-  margin: 10px 0;
-}
-
-.product-description {
-  font-size: 1rem;
-  color: #555;
-}
-
-.product-price {
-  font-size: 1.2rem;
-  color: #333;
-  margin: 10px 0;
-}
-
-.details-link {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 10px 20px;
-  color: #fff;
-  background-color: #007bff;
-  border-radius: 5px;
-  text-decoration: none;
-}
-
-.details-link:hover {
-  background-color: #0056b3;
-}
-
-/* Asegúrate de que el carrito y las categorías se alineen bien en pantallas pequeñas */
-.navbar .navbar-nav {
+.navbar {
+  background-color: #333;
+  padding: 15px 30px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
-.navbar-nav .nav-item {
-  margin-left: 15px;
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  margin-right: 20px;
 }
 
-/* Mejorar la apariencia del carrito en la navbar */
-.navbar .cart-widget {
-  font-size: 1.5rem;
-  color: white;
+.navbar a:hover {
+  text-decoration: underline;
 }

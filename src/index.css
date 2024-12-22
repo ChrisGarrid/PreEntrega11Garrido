@@ -1,83 +1,111 @@
-.item-list-container {
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
 }
 
 .greeting {
   text-align: center;
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.error-message {
-  color: red;
-  text-align: center;
-  font-size: 1.2rem;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 30px;
 }
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
 }
 
 .product-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
 }
 
 .product-image {
   width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 15px;
+  height: 200px;
+  object-fit: cover;
+}
+
+.product-details {
+  padding: 20px;
 }
 
 .product-name {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   margin: 10px 0;
+  color: #333;
 }
 
 .product-description {
   font-size: 1rem;
-  color: #555;
+  color: #777;
+  margin-bottom: 15px;
 }
 
 .product-price {
-  font-size: 1.2rem;
-  color: #333;
-  margin: 10px 0;
+  font-size: 1.5rem;
+  color: #e63946;
 }
 
-.details-link {
+.btn-primary {
   display: inline-block;
-  margin-top: 10px;
-  padding: 10px 20px;
-  color: #fff;
+  padding: 12px 30px;
   background-color: #007bff;
-  border-radius: 5px;
+  color: white;
+  border-radius: 8px;
   text-decoration: none;
+  transition: background-color 0.3s ease;
 }
 
-.details-link:hover {
+.btn-primary:hover {
   background-color: #0056b3;
 }
 
-/* Asegúrate de que el carrito y las categorías se alineen bien en pantallas pequeñas */
-.navbar .navbar-nav {
-  display: flex;
-  align-items: center;
+.navbar {
+  background-color: #333;
+  padding: 15px 30px;
 }
 
-.navbar-nav .nav-item {
-  margin-left: 15px;
+.navbar a {
+  color: white;
+  margin-right: 20px;
+  text-decoration: none;
+  font-size: 1.2rem;
 }
 
-/* Mejorar la apariencia del carrito en la navbar */
-.navbar .cart-widget {
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+.cart-widget {
   font-size: 1.5rem;
   color: white;
+  position: relative;
+}
+
+.cart-widget .badge {
+  position: absolute;
+  top: -8px;
+  right: -12px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 4px 8px;
+  font-size: 0.9rem;
 }

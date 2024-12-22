@@ -1,22 +1,57 @@
 import React, { createContext, useState, useContext } from 'react';
 
-// Crear el contexto
-export const CartContext = createContext();
+const CartContext = createContext();
 
-// Crear el hook para usar el contexto
 export const useCart = () => useContext(CartContext);
 
-// Crear el proveedor del contexto
-export const CartContextProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
+export const CartProvider = ({ children }) => {
+  const [cartItems, setCartItems] = useState([]);
 
-  // Función para agregar un item al carrito
+  // Agregar un producto al carrito o sumar cantidad si ya existe
   const addItem = (item, quantity) => {
-    setCart((prevCart) => [...prevCart, { ...item, quantity }]);
+    const existingItem = cartItems.find(prod => prod.id === item.id);
+
+    if (existingItem) {
+      const updatedCart = cartItems.map(prod =>
+        prod.id === item.id ? { ...prod, quantity: prod.quantity + quantity } : prod
+      );
+      setCartItems(updatedCart);
+    } else {
+      setCartItems([...cartItems, { ...item, quantity }]);
+    }
+  };
+
+  // Eliminar un producto específico
+  const removeItem = (id) => {
+    setCartItems(cartItems.filter(item => item.id !== id));
+  };
+
+  // Vaciar el carrito completamente
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
+  // Calcular la cantidad total de productos
+  const totalItems = () => {
+    return cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  };
+
+  // Calcular el precio total de la compra
+  const totalPrice = () => {
+    return cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
   };
 
   return (
-    <CartContext.Provider value={{ addItem, cart }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        addItem,
+        removeItem,
+        clearCart,
+        totalItems,
+        totalPrice
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
