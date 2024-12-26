@@ -8,9 +8,9 @@ const CartWidget = () => {
 
   return (
     <div className="cart-widget">
-      <Link to="/cart" className="cart-link">
+      <Link to={totalItems() > 0 ? "/cart" : "#"} className="cart-link">
         <FaShoppingCart size={24} />
-        {totalItems() > 0 && <span className="cart-badge">{totalItems()}</span>}
+        {totalItems() > 0 && <span className="cart-badge">{totalItems() > 99 ? '99+' : totalItems()}</span>}
       </Link>
     </div>
   );

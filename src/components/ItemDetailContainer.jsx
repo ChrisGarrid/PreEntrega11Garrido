@@ -1,36 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
-import ItemList from './ItemList';
-import menuData from '../firebase/menuData.json';
+import { useParams } from 'react-router-dom';
+import ItemDetail from './ItemDetail';
 
-const ItemListContainer = () => {
-  const [items, setItems] = useState([]);
+const ItemDetailContainer = () => {
+  const { id } = useParams();
+  const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchItems = async () => {
-      const querySnapshot = await getDocs(collection(db, 'items'));
-      const products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setItems(products);
-      setLoading(false);
+    const fetchItem = async () => {
+      try {
+        if (!id) {
+          throw new Error('ID del producto no encontrado');
+        }
+        console.log('ID recibido:', id);  // Depuración del ID
+        const docRef = doc(db, 'items', id);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          console.log('Producto encontrado:', docSnap.data());
+          setItem({ id: docSnap.id, ...docSnap.data() });
+        } else {
+          console.log('Producto no existe en Firebase.');
+          setError('Producto no encontrado');
+        }
+      } catch (error) {
+        setError('Error al cargar el producto');
+        console.error('Error al cargar el producto:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchItems();
-  }, []);
+    fetchItem();
+  }, [id]);
 
-  const addData = () => { 
-    const collectionToAdd = collection(db, 'items');
-    menuData.forEach((item) => addDoc(collectionToAdd, item));
-  };
+  if (loading) {
+    return <p>Cargando producto...</p>;
+  }
 
-  return (
-    <div className="item-list-container">
-      <h1>Productos Disponibles</h1>
-      <button onClick={addData} className="btn btn-primary">Agregar a Firebase</button>
-      {loading ? <p>Cargando productos...</p> : <ItemList items={items} />}
-    </div>
-  );
+  if (error) {
+    return <p>{error}</p>;
+  }
+
+  return item ? <ItemDetail item={item} /> : <p>Producto no encontrado</p>;
 };
 
-export default ItemListContainer;
+export default ItemDetailContainer;

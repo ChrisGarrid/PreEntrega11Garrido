@@ -1,51 +1,57 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import { useParams, Link } from 'react-router-dom';
-import { getProductoById } from '../firebase/firebaseConfig';
 import ItemCount from './ItemCount';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../firebase/firebaseConfig';
+import { useNavigate } from 'react-router-dom';
 
-const ItemDetail = () => {
-  const { addItem } = useCart();
-  const [item, setItem] = useState(null);
-  const [quantity, setQuantity] = useState(1);
-  const [added, setAdded] = useState(false);
-  const { itemId } = useParams();
+const ItemDetail = ({ item }) => {
+  const { addToCart } = useCart();
+  const [quantityAdded, setQuantityAdded] = useState(false);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchItem = async () => {
+  const handleAddToCart = async (quantity) => {
+    if (item && item.id && quantity > 0) {
+      const productToAdd = {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity,
+        stock: item.stock - quantity
+      };
+
+      console.log("Producto agregado al carrito:", productToAdd);
+      addToCart(productToAdd);
+
+      // Actualizar stock en Firebase
+      const itemRef = doc(db, 'items', item.id);
       try {
-        const product = await getProductoById(itemId);
-        setItem(product);
-      } catch {
-        setItem(null);
+        await setDoc(itemRef, { stock: item.stock - quantity }, { merge: true });
+        console.log("Stock actualizado en Firebase");
+      } catch (error) {
+        console.error("Error al actualizar stock:", error);
       }
-    };
-    fetchItem();
-  }, [itemId]);
 
-  const handleAddToCart = () => {
-    addItem(item, quantity);
-    setAdded(true);
+      setQuantityAdded(true);
+    }
   };
-
-  if (!item) return <div>Cargando...</div>;
 
   return (
     <div className="item-detail">
-      <h2>{item.name}</h2>
-      <p>{item.description}</p>
-      <p>Precio: ${item.price}</p>
-      {added ? (
-        <Link to="/cart">
-          <button className="btn btn-primary">Ir al carrito</button>
-        </Link>
-      ) : (
-        <div>
-          <ItemCount quantity={quantity} setQuantity={setQuantity} />
-          <button onClick={handleAddToCart} className="btn btn-primary">
-            Agregar al carrito
+      <h2>{item?.name || 'Producto no encontrado'}</h2>
+      <p>{item?.description || 'Sin descripción disponible'}</p>
+      <p>{item ? '¡Un delicioso platillo para disfrutar!' : ''}</p>
+      <p>Precio: ${item?.price || 'N/A'}</p>
+      {item?.stock > 0 ? (
+        quantityAdded ? (
+          <button className="btn btn-primary" onClick={() => navigate('/cart')}>
+            Ir al carrito
           </button>
-        </div>
+        ) : (
+          <ItemCount stock={item.stock} initial={1} onAdd={handleAddToCart} />
+        )
+      ) : (
+        <p>Producto agotado</p>
       )}
     </div>
   );

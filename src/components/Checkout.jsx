@@ -56,6 +56,9 @@ const Checkout = () => {
         <div>
           <h2>Gracias por su compra!</h2>
           <p>Su número de orden es: <strong>{orderId}</strong></p>
+          <button onClick={() => window.location.href = '/'} className="btn btn-primary">
+            Volver al Menú
+          </button>
         </div>
       ) : (
         <form onSubmit={handleSubmit}>

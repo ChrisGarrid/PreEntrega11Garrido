@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, addDoc, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 import ItemList from './ItemList';
-import menuData from '../firebase/menuData.json';
 import { useParams } from 'react-router-dom';
 
 const ItemListContainer = () => {
@@ -21,7 +20,7 @@ const ItemListContainer = () => {
       let q;
 
       if (categoryId) {
-    q = query(collectionRef, where('category', '==', categoryId));
+        q = query(collectionRef, where('category', '==', categoryId));
       } else {
         q = collectionRef;
       }
@@ -36,25 +35,9 @@ const ItemListContainer = () => {
     }
   };
 
-  const addData = async () => {
-    const collectionToAdd = collection(db, 'items');
-
-    for (const item of menuData) {
-      const itemQuery = query(collectionToAdd, where('name', '==', item.name));
-      const querySnapshot = await getDocs(itemQuery);
-
-      if (querySnapshot.empty) {
-        await addDoc(collectionToAdd, item);
-      }
-    }
-
-    fetchItems();
-  };
-
   return (
     <div className="item-list-container">
       <h1>Productos Disponibles {categoryId ? `- ${categoryId}` : ''}</h1>
-      <button onClick={addData} className="btn btn-primary">Agregar a Firebase</button>
       {loading ? <p>Cargando productos...</p> : <ItemList items={items} />}
     </div>
   );
