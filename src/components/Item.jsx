@@ -3,8 +3,6 @@ import React from 'react';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
 import ItemCount from './ItemCount';
-import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../firebase/firebaseConfig';
 
 const Item = ({ item }) => {
   const { addToCart } = useCart();
@@ -13,27 +11,15 @@ const Item = ({ item }) => {
     return <p>Producto no disponible</p>;
   }
 
-  const handleAddToCart = async (quantity) => {
+  const handleAddToCart = (quantity) => {
     if (item.stock >= quantity) {
       const productToAdd = {
         id: item.id,
         name: item.name || 'Producto sin nombre',
         price: item.price || 0,
         quantity,
-        stock: item.stock - quantity,
       };
-
-      console.log("Producto agregado desde lista:", productToAdd);
       addToCart(productToAdd);
-
-      // Actualizar stock en Firebase
-      const itemRef = doc(db, 'items', item.id);
-      try {
-        await setDoc(itemRef, { stock: item.stock - quantity }, { merge: true });
-        console.log("Stock actualizado desde lista en Firebase");
-      } catch (error) {
-        console.error("Error al actualizar stock desde lista:", error);
-      }
     } else {
       alert("Producto agotado o no disponible");
     }

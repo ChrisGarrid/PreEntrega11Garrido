@@ -1,15 +1,3 @@
-# E-commerce con React JS y Firebase
-
-Este es un proyecto de e-commerce desarrollado con **React JS** y **Firebase**. La aplicación permite a los usuarios seleccionar productos, agregarlos a un carrito de compras y finalizar su compra a través de un proceso de checkout que genera una orden en Firestore.
-
-## Funcionalidades Principales 🚀
-- **Listado de Productos**: Visualización de productos desde Firebase.
-- **Detalle de Producto**: Página individual con descripción y selector de cantidad.
-- **Carrito de Compras**: Añadir, eliminar y modificar la cantidad de productos.
-- **Checkout**: Formulario para ingresar datos del comprador y seleccionar método de entrega (retiro o envío).
-- **Persistencia del Carrito**: Almacenamiento en `localStorage`.
-- **Códigos de Descuento**: Aplicación de descuentos (por ejemplo, `DESCUENTO10`).
-
 E-Commerce de Comida Japonesa 🍣
 Este proyecto es una tienda online de comida japonesa que permite a los usuarios navegar, agregar productos al carrito y completar compras. La app está desarrollada con React JS y se integra con Firebase para gestionar la base de datos y el checkout.
 
